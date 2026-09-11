@@ -37,7 +37,18 @@ while True:
                 
                 print(f"{number}. {subject} — {minutes} minutes")
     elif choice == "3":
-        print("Let's calculate your total study time~ ⌛")
+        if not study_sessions:
+            ("❌ Ops! You have not added any study sessions yet")
+        else:
+            total_minutes = 0
+            
+            for session in study_sessions:
+                total_minutes += session["minutes"]
+                
+            hours = total_minutes // 60
+            remaining_minutes = total_minutes % 60
+            
+            print(f"⌛ You have studied for {hours} hours and {remaining_minutes} minutes~")
     elif choice == "4":
         print("Goodbye! Keep learning~ 💗")
         break
