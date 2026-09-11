@@ -7,11 +7,24 @@ def show_menu():
     print("2. View study sessions")
     print("3. View total study time")
     print("4. Exit")
+    
+#function for loading saved sessions
+def load_sessions():
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as file:
+            return json.load(file)
+        
+    except FileNotFoundError:
+        return []
+    
+    except json.JSONDecodeError:
+        print("Warning: The sessions file contains invalid JSON")
+        return []
 
 #start message    
 print("🌸 Welcome to Study Tracker!")
 
-study_sessions = []
+study_sessions = load_sessions()
 
 #function for adding new session
 def add_session(sessions):
@@ -76,6 +89,7 @@ def show_total_time(sessions):
 def save_sessions(sessions):
     with open(DATA_FILE, "w", encoding="utf-8") as file:
         json.dump(sessions, file, indent=4, ensure_ascii=False)
+        
 
 while True:
     show_menu()
