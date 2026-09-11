@@ -24,11 +24,6 @@ def load_sessions():
         print("Warning: The sessions file contains invalid JSON")
         return []
 
-#start message    
-print("🌸 Welcome to Study Tracker!")
-
-study_sessions = load_sessions()
-
 #function for adding new session
 def add_session(sessions):
     subject = input("📖 What subject did you study? ").strip()
@@ -121,31 +116,44 @@ def show_total_time(sessions):
     hours = total_minutes // 60
     remaining_minutes = total_minutes % 60
         
-    print(f"⌛ You have studied for {hours} hours and {remaining_minutes} minutes~")
-    
+    hour_word = "hour" if hours == 1 else "hours"
+    minute_word = "minute" if remaining_minutes == 1 else "minutes"
+
+    print(
+        f"⌛ You have studied for {hours} {hour_word} "
+        f"and {remaining_minutes} {minute_word}~"
+)
+
 #function for saving sessions to json
 def save_sessions(sessions):
     with open(DATA_FILE, "w", encoding="utf-8") as file:
         json.dump(sessions, file, indent=4, ensure_ascii=False)
         
+def main():
+    print("🌸 Welcome to Study Tracker!")
+    
+    study_sessions = load_sessions()
+    
+    while True:
+        show_menu()
 
-while True:
-    show_menu()
+        choice = input('\nEnter your choice (1-5):')
+        #print(f"You selected option {choice}.")
 
-    choice = input('\nEnter your choice (1-5):')
-    #print(f"You selected option {choice}.")
+        #menu responses
+        if choice == "1":
+            add_session(study_sessions)
+        elif choice == "2":
+            view_sessions(study_sessions)
+        elif choice == "3":
+            show_total_time(study_sessions)
+        elif choice == "4":
+            delete_session(study_sessions)
+        elif choice == "5":
+            print("Goodbye! Keep learning~ 💗")
+            break
+        else:
+            print("❌ Ops! Invalid choice. Please enter a number from 1 to 5~")
 
-    #menu responses
-    if choice == "1":
-        add_session(study_sessions)
-    elif choice == "2":
-        view_sessions(study_sessions)
-    elif choice == "3":
-        show_total_time(study_sessions)
-    elif choice == "4":
-        delete_session(study_sessions)
-    elif choice == "5":
-        print("Goodbye! Keep learning~ 💗")
-        break
-    else:
-        print("❌ Ops! Invalid choice. Please enter a number from 1 to 5~")
+if __name__ == "__main__":
+    main()
