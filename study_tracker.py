@@ -43,14 +43,14 @@ def view_sessions(sessions):
     if not study_sessions:
         print("❌ Ops! You have not added any study sessions yet")
         return
-    else:
-        print("\nYour study sessions:")
+
+    print("\nYour study sessions:")
     
-        for number, session in enumerate(sessions, start=1):
-            subject = session["subject"]
-            minutes = session["minutes"]
+    for number, session in enumerate(sessions, start=1):
+        subject = session["subject"]
+        minutes = session["minutes"]
     
-            print(f"{number}. {subject} — {minutes} minutes")
+        print(f"{number}. {subject} — {minutes} minutes")
 
 while True:
     show_menu()
