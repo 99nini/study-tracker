@@ -1,5 +1,7 @@
 import json
+from datetime import date
 DATA_FILE = "sessions.json"
+
 # menu
 def show_menu():
     print("\nWhat would you like to do?")
@@ -7,7 +9,7 @@ def show_menu():
     print("2. View study sessions")
     print("3. View total study time")
     print("4. Exit")
-    
+
 #function for loading saved sessions
 def load_sessions():
     try:
@@ -46,9 +48,12 @@ def add_session(sessions):
         print("❌ Study time must be greater than zero")
         return
     
+    today = date.today().isoformat()
+    
     session = {
         "subject": subject,
-        "minutes": minutes
+        "minutes": minutes,
+        "date": today
     }
     
     sessions.append(session)
@@ -66,8 +71,9 @@ def view_sessions(sessions):
     for number, session in enumerate(sessions, start=1):
         subject = session["subject"]
         minutes = session["minutes"]
+        session_date = session.get("date", "Unknown date")
     
-        print(f"{number}. {subject} — {minutes} minutes")
+        print(f"{number}. {session_date} — {subject}: {minutes} minutes")
         
 #function for viewing total study time
 def show_total_time(sessions):
