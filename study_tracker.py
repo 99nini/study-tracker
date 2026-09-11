@@ -15,8 +15,23 @@ while True:
 
     #menu responses
     if choice == "1":
-        subject = input("📖 What subject did you study?")
-        minutes = int(input("How many minutes did you study?"))
+        subject = input("📖 What subject did you study? ").strip()
+        
+        if not subject:
+            print("❌ The subject can not be empty")
+            continue
+        
+        minutes_text = input("⌛ How many minutes did you study? ").strip()
+        
+        if not minutes_text.isdigit():
+            print("❌ Please enter the minutes as a number value")
+            continue
+        
+        minutes = int(minutes_text)
+        
+        if minutes <= 0:
+            print("❌ Study time must be greater than zero")
+            continue
         
         session = {
             "subject": subject,
