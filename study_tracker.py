@@ -11,7 +11,7 @@ print("🌸 Welcome to Study Tracker!")
 
 study_sessions = []
 
-#functions for menu options
+#function for adding new session
 def add_session(sessions):
     subject = input("📖 What subject did you study? ").strip()
     
@@ -38,9 +38,10 @@ def add_session(sessions):
     
     sessions.append(session)
     print(f"Added {minutes} minutes of {subject}~")
-    
+
+#function for viewing sessions    
 def view_sessions(sessions):
-    if not study_sessions:
+    if not sessions:
         print("❌ Ops! You have not added any study sessions yet")
         return
 
@@ -51,6 +52,22 @@ def view_sessions(sessions):
         minutes = session["minutes"]
     
         print(f"{number}. {subject} — {minutes} minutes")
+        
+#function for viewing total study time
+def show_total_time(sessions):
+    if not sessions:
+        print("❌ Ops! You have not added any study sessions yet")
+        return
+    
+    total_minutes = 0
+        
+    for session in sessions:
+        total_minutes += session["minutes"]
+            
+    hours = total_minutes // 60
+    remaining_minutes = total_minutes % 60
+        
+    print(f"⌛ You have studied for {hours} hours and {remaining_minutes} minutes~")
 
 while True:
     show_menu()
@@ -64,18 +81,7 @@ while True:
     elif choice == "2":
         view_sessions(study_sessions)
     elif choice == "3":
-        if not study_sessions:
-            ("❌ Ops! You have not added any study sessions yet")
-        else:
-            total_minutes = 0
-            
-            for session in study_sessions:
-                total_minutes += session["minutes"]
-                
-            hours = total_minutes // 60
-            remaining_minutes = total_minutes % 60
-            
-            print(f"⌛ You have studied for {hours} hours and {remaining_minutes} minutes~")
+        show_total_time(study_sessions)
     elif choice == "4":
         print("Goodbye! Keep learning~ 💗")
         break
