@@ -38,6 +38,19 @@ def add_session(sessions):
     
     sessions.append(session)
     print(f"Added {minutes} minutes of {subject}~")
+    
+def view_sessions(sessions):
+    if not study_sessions:
+        print("❌ Ops! You have not added any study sessions yet")
+        return
+    else:
+        print("\nYour study sessions:")
+    
+        for number, session in enumerate(sessions, start=1):
+            subject = session["subject"]
+            minutes = session["minutes"]
+    
+            print(f"{number}. {subject} — {minutes} minutes")
 
 while True:
     show_menu()
@@ -49,16 +62,7 @@ while True:
     if choice == "1":
         add_session(study_sessions)
     elif choice == "2":
-        if not study_sessions:
-            print("❌ Ops! You have not added any study sessions yet")
-        else:
-            print("\nYour study sessions:")
-            
-            for number, session in enumerate(study_sessions, start=1):
-                subject = session["subject"]
-                minutes = session["minutes"]
-                
-                print(f"{number}. {subject} — {minutes} minutes")
+        view_sessions(study_sessions)
     elif choice == "3":
         if not study_sessions:
             ("❌ Ops! You have not added any study sessions yet")
