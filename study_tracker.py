@@ -8,7 +8,8 @@ def show_menu():
     print("1. Add a study session")
     print("2. View study sessions")
     print("3. View total study time")
-    print("4. Exit")
+    print("4. Delete a study session")
+    print("5. Exit")
 
 #function for loading saved sessions
 def load_sessions():
@@ -73,8 +74,39 @@ def view_sessions(sessions):
         minutes = session["minutes"]
         session_date = session.get("date", "Unknown date")
     
-        print(f"{number}. {session_date} — {subject}: {minutes} minutes")
-        
+        print(f"{number}. {session_date} — {subject}: {minutes} minutes") 
+
+#function for deleting an existing study session
+def delete_session(sessions):
+    if not sessions:
+        print("You have not added any study sessions yet")
+        return
+    
+    view_sessions(sessions)
+    
+    session_number_text = input(
+        "\nEnter the number of the session to delete: "
+    ).strip()
+    
+    if not session_number_text.isdigit():
+        print("Please enter a valid session number")
+        return
+    
+    session_number = int(session_number_text)
+    session_index = session_number - 1
+    
+    if session_index < 0 or session_index >= len(sessions):
+        print("This session number does not exist")
+        return
+    
+    removed_session = sessions.pop(session_index)
+    save_sessions(sessions)
+    
+    subject = removed_session["subject"]
+    minutes = removed_session["minutes"]
+    
+    print(f"Deleted {minutes} minutes of {subject}.")
+
 #function for viewing total study time
 def show_total_time(sessions):
     if not sessions:
@@ -100,7 +132,7 @@ def save_sessions(sessions):
 while True:
     show_menu()
 
-    choice = input('\nEnter your choice (1-4):')
+    choice = input('\nEnter your choice (1-5):')
     #print(f"You selected option {choice}.")
 
     #menu responses
@@ -111,7 +143,9 @@ while True:
     elif choice == "3":
         show_total_time(study_sessions)
     elif choice == "4":
+        delete_session(study_sessions)
+    elif choice == "5":
         print("Goodbye! Keep learning~ 💗")
         break
     else:
-        print("❌ Ops! Invalid choice. Please enter a number from 1 to 4~")
+        print("❌ Ops! Invalid choice. Please enter a number from 1 to 5~")
