@@ -1,0 +1,9 @@
+# Personal study data
+sessions.json
+
+# Python-generated files
+__pycache__/
+*.pyc
+
+# Virtual environment
+.venv/
