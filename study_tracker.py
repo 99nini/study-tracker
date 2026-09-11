@@ -1,3 +1,5 @@
+import json
+DATA_FILE = "sessions.json"
 # menu
 def show_menu():
     print("\nWhat would you like to do?")
@@ -37,6 +39,7 @@ def add_session(sessions):
     }
     
     sessions.append(session)
+    save_sessions(sessions)
     print(f"Added {minutes} minutes of {subject}~")
 
 #function for viewing sessions    
@@ -68,6 +71,11 @@ def show_total_time(sessions):
     remaining_minutes = total_minutes % 60
         
     print(f"⌛ You have studied for {hours} hours and {remaining_minutes} minutes~")
+    
+#function for saving sessions to json
+def save_sessions(sessions):
+    with open(DATA_FILE, "w", encoding="utf-8") as file:
+        json.dump(sessions, file, indent=4, ensure_ascii=False)
 
 while True:
     show_menu()
