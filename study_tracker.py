@@ -11,6 +11,34 @@ print("🌸 Welcome to Study Tracker!")
 
 study_sessions = []
 
+#functions for menu options
+def add_session(sessions):
+    subject = input("📖 What subject did you study? ").strip()
+    
+    if not subject:
+        print("❌ The subject can not be empty")
+        return
+    
+    minutes_text = input("⌛ How many minutes did you study? ").strip()
+    
+    if not minutes_text.isdigit():
+        print("❌ Please enter the minutes as a number value")
+        return
+    
+    minutes = int(minutes_text)
+    
+    if minutes <= 0:
+        print("❌ Study time must be greater than zero")
+        return
+    
+    session = {
+        "subject": subject,
+        "minutes": minutes
+    }
+    
+    sessions.append(session)
+    print(f"Added {minutes} minutes of {subject}~")
+
 while True:
     show_menu()
 
@@ -19,31 +47,7 @@ while True:
 
     #menu responses
     if choice == "1":
-        subject = input("📖 What subject did you study? ").strip()
-        
-        if not subject:
-            print("❌ The subject can not be empty")
-            continue
-        
-        minutes_text = input("⌛ How many minutes did you study? ").strip()
-        
-        if not minutes_text.isdigit():
-            print("❌ Please enter the minutes as a number value")
-            continue
-        
-        minutes = int(minutes_text)
-        
-        if minutes <= 0:
-            print("❌ Study time must be greater than zero")
-            continue
-        
-        session = {
-            "subject": subject,
-            "minutes": minutes
-        }
-        
-        study_sessions.append(session)
-        print(f"Added {minutes} minutes of {subject}~")
+        add_session(study_sessions)
     elif choice == "2":
         if not study_sessions:
             print("❌ Ops! You have not added any study sessions yet")
