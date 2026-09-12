@@ -74,6 +74,18 @@ def load_sessions_from_database():
         
     return sessions
 
+#function for deleting session from db
+def delete_session_from_database(session_id):
+    with sqlite3.connect(DATABASE_FILE) as connection:
+        cursor = connection.cursor()
+        
+        cursor.execute(
+            "DELETE FROM sessions where id = ?",
+            (session_id,),
+        )
+        
+        connection.commit
+
 #function for loading saved sessions
 def load_sessions():
     try:
@@ -144,33 +156,42 @@ def view_sessions(sessions):
 #function for deleting an existing study session
 def delete_session(sessions):
     if not sessions:
-        print("You have not added any study sessions yet")
+        print("There are no study sessions to delete.")
         return
-    
-    view_sessions(sessions)
-    
-    session_number_text = input(
-        "\nEnter the number of the session to delete: "
+
+    print("\nStudy sessions:")
+
+    for number, session in enumerate(sessions, start=1):
+        print(
+            f"{number}. {session['subject']} - "
+            f"{session['minutes']} minutes - "
+            f"{session['date']}"
+        )
+
+    choice = input(
+        "Enter the number of the session to delete: "
     ).strip()
-    
-    if not session_number_text.isdigit():
-        print("Please enter a valid session number")
+
+    if not choice.isdigit():
+        print("❌ Please enter a valid number.")
         return
-    
-    session_number = int(session_number_text)
-    session_index = session_number - 1
-    
+
+    session_index = int(choice) - 1
+
     if session_index < 0 or session_index >= len(sessions):
-        print("This session number does not exist")
+        print("❌ That session does not exist.")
         return
-    
-    removed_session = sessions.pop(session_index)
-    save_sessions(sessions)
-    
-    subject = removed_session["subject"]
-    minutes = removed_session["minutes"]
-    
-    print(f"Deleted {minutes} minutes of {subject}.")
+
+    session = sessions[session_index]
+    session_id = session["id"]
+
+    delete_session_from_database(session_id)
+    sessions.pop(session_index)
+
+    print(
+        f"Deleted {session['minutes']} minutes "
+        f"of {session['subject']}."
+    )
 
 #function for viewing total study time
 def show_total_time(sessions):
