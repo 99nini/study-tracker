@@ -9,7 +9,8 @@ def show_menu():
     print("2. View study sessions")
     print("3. View total study time")
     print("4. Delete a study session")
-    print("5. Exit")
+    print("5. Edit a study session")
+    print("6. Exit")
 
 #function for creating db
 def create_database():
@@ -84,7 +85,7 @@ def delete_session_from_database(session_id):
         
         connection.commit
 
-#function for calculating total time with sql
+#function for calculating total time from db
 def get_total_minutes_from_database():
     with sqlite3.connect(DATABASE_FILE) as connection:
         cursor = connection.cursor()
@@ -96,6 +97,21 @@ def get_total_minutes_from_database():
         result = cursor.fetchone()
         
     return result[0]
+
+#function for editing an existing study session
+def update_session_in_database(session_id, subject, minutes):
+    with sqlite3.connect(DATABASE_FILE) as connection:
+        cursor = connection.cursor()
+        
+        cursor.execute(
+            "UPDATE sessions "
+            "SET subject = ?, minutes = ? "
+            "WHERE id = ?",
+            (subject, minutes, session_id),
+        )
+        
+        connection.commit()
+
 
 #function for adding new session
 def add_session(sessions):
@@ -191,6 +207,72 @@ def delete_session(sessions):
         f"of {session['subject']}."
     )
 
+#user prompt for editing session
+def edit_session(sessions):
+    if not sessions:
+        print("There are no study sessions to edit.")
+        return
+
+    print("\nStudy sessions:")
+
+    for number, session in enumerate(sessions, start=1):
+        print(
+            f"{number}. {session['subject']} - "
+            f"{session['minutes']} minutes - "
+            f"{session['date']}"
+        )
+
+    choice = input(
+        "Enter the number of the session to edit: "
+    ).strip()
+
+    if not choice.isdigit():
+        print("❌ Please enter a valid number.")
+        return
+
+    session_index = int(choice) - 1
+
+    if session_index < 0 or session_index >= len(sessions):
+        print("❌ That session does not exist.")
+        return
+
+    session = sessions[session_index]
+
+    new_subject = input(
+        f"New subject [{session['subject']}]: "
+    ).strip()
+
+    if not new_subject:
+        new_subject = session["subject"]
+
+    new_minutes_text = input(
+        f"New minutes [{session['minutes']}]: "
+    ).strip()
+
+    if new_minutes_text:
+        if not new_minutes_text.isdigit():
+            print("❌ Please enter the minutes as a number.")
+            return
+
+        new_minutes = int(new_minutes_text)
+
+        if new_minutes <= 0:
+            print("❌ Study time must be greater than zero.")
+            return
+    else:
+        new_minutes = session["minutes"]
+
+    update_session_in_database(
+        session["id"],
+        new_subject,
+        new_minutes,
+    )
+
+    session["subject"] = new_subject
+    session["minutes"] = new_minutes
+
+    print("Study session updated!")
+
 #function for viewing total study time
 def show_total_time():
     total_minutes = get_total_minutes_from_database()
@@ -216,7 +298,7 @@ def main():
     while True:
         show_menu()
 
-        choice = input('\nEnter your choice (1-5):')
+        choice = input('\nEnter your choice (1-6):')
         #print(f"You selected option {choice}.")
 
         #menu responses
@@ -229,6 +311,8 @@ def main():
         elif choice == "4":
             delete_session(sessions)
         elif choice == "5":
+            edit_session(sessions)
+        elif choice == "6":
             print("Goodbye! Keep learning~ 💗")
             break
         else:
