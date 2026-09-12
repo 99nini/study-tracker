@@ -29,6 +29,7 @@ def create_database():
         
         connection.commit()
 
+#functon for saving session to db
 def save_session_to_database(subject, minutes, study_date):
     with sqlite3.connect(DATABASE_FILE) as connection:
         cursor = connection.cursor()
@@ -42,6 +43,36 @@ def save_session_to_database(subject, minutes, study_date):
         )
         
         connection.commit()
+        return cursor.lastrowid
+
+#function for loading sessions from db
+def load_sessions_from_database():
+    with sqlite3.connect(DATABASE_FILE) as connection:
+        cursor = connection.cursor()
+        
+        cursor.execute(
+            """
+            SELECT id, subject, minutes, study_date
+            FROM sessions
+            ORDER BY id
+            """
+        )
+    
+        rows = cursor.fetchall()
+    
+    sessions = []
+    
+    for row in rows:
+        session = {
+            "id": row[0],
+            "subject": row[1],
+            "minutes": row[2],
+            "date": row[3]
+        }
+            
+        sessions.append(session)
+        
+    return sessions
 
 #function for loading saved sessions
 def load_sessions():
@@ -78,15 +109,20 @@ def add_session(sessions):
     
     today = date.today().isoformat()
     
+    session_id = save_session_to_database(
+        subject,
+        minutes,
+        today
+    )
+    
     session = {
+        "id": session_id,
         "subject": subject,
         "minutes": minutes,
         "date": today
     }
     
     sessions.append(session)
-    save_sessions(sessions)
-    save_session_to_database(subject, minutes, today)
     
     print(f"Added {minutes} minutes of {subject}~")
 
@@ -167,7 +203,7 @@ def main():
     create_database()
     print("🌸 Welcome to Study Tracker!")
     
-    study_sessions = load_sessions()
+    study_sessions = load_sessions_from_database()
     
     while True:
         show_menu()
