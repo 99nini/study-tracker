@@ -86,6 +86,19 @@ def delete_session_from_database(session_id):
         
         connection.commit
 
+#function for calculating total time with sql
+def get_total_minutes_from_database():
+    with sqlite3.connect(DATABASE_FILE) as connection:
+        cursor = connection.cursor()
+        
+        cursor.execute(
+            "SELECT COALESCE(SUM(minutes), 0) from sessions"
+        )
+        
+        result = cursor.fetchone()
+        
+    return result[0]
+
 #function for loading saved sessions
 def load_sessions():
     try:
@@ -194,16 +207,10 @@ def delete_session(sessions):
     )
 
 #function for viewing total study time
-def show_total_time(sessions):
-    if not sessions:
-        print("❌ Ops! You have not added any study sessions yet")
-        return
+def show_total_time():
+    total_minutes = get_total_minutes_from_database()
     
-    total_minutes = 0
-        
-    for session in sessions:
-        total_minutes += session["minutes"]
-            
+    
     hours = total_minutes // 60
     remaining_minutes = total_minutes % 60
         
@@ -238,7 +245,7 @@ def main():
         elif choice == "2":
             view_sessions(study_sessions)
         elif choice == "3":
-            show_total_time(study_sessions)
+            show_total_time()
         elif choice == "4":
             delete_session(study_sessions)
         elif choice == "5":
