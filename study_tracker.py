@@ -29,6 +29,20 @@ def create_database():
         
         connection.commit()
 
+def save_session_to_database(subject, minutes, study_date):
+    with sqlite3.connect(DATABASE_FILE) as connection:
+        cursor = connection.cursor()
+        
+        cursor.execute(
+            """
+            INSERT INTO sessions (subject, minutes, study_date)
+            VALUES (?, ?, ?)
+            """,
+            (subject, minutes, study_date)
+        )
+        
+        connection.commit()
+
 #function for loading saved sessions
 def load_sessions():
     try:
@@ -72,6 +86,8 @@ def add_session(sessions):
     
     sessions.append(session)
     save_sessions(sessions)
+    save_session_to_database(subject, minutes, today)
+    
     print(f"Added {minutes} minutes of {subject}~")
 
 #function for viewing sessions    

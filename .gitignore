@@ -1,5 +1,6 @@
 # Personal study data
 sessions.json
+study_tracker.db
 
 # Python-generated files
 __pycache__/
