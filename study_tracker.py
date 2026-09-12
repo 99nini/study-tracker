@@ -1,6 +1,8 @@
 import json
+import sqlite3
 from datetime import date
 DATA_FILE = "sessions.json"
+DATABASE_FILE = "study_tracker.db"
 
 # menu
 def show_menu():
@@ -10,6 +12,22 @@ def show_menu():
     print("3. View total study time")
     print("4. Delete a study session")
     print("5. Exit")
+
+#function for creating db
+def create_database():
+    with sqlite3.connect(DATABASE_FILE) as connection:
+        cursor = connection.cursor()
+        
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS sessions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                subject TEXT NOT NULL,
+                minutes INTEGER NOT NULL,
+                study_date TEXT NOT NULL
+            )
+        """)
+        
+        connection.commit()
 
 #function for loading saved sessions
 def load_sessions():
@@ -130,6 +148,7 @@ def save_sessions(sessions):
         json.dump(sessions, file, indent=4, ensure_ascii=False)
         
 def main():
+    create_database()
     print("🌸 Welcome to Study Tracker!")
     
     study_sessions = load_sessions()
