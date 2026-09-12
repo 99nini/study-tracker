@@ -1,7 +1,5 @@
-import json
 import sqlite3
 from datetime import date
-DATA_FILE = "sessions.json"
 DATABASE_FILE = "study_tracker.db"
 
 # menu
@@ -98,19 +96,6 @@ def get_total_minutes_from_database():
         result = cursor.fetchone()
         
     return result[0]
-
-#function for loading saved sessions
-def load_sessions():
-    try:
-        with open(DATA_FILE, "r", encoding="utf-8") as file:
-            return json.load(file)
-        
-    except FileNotFoundError:
-        return []
-    
-    except json.JSONDecodeError:
-        print("Warning: The sessions file contains invalid JSON")
-        return []
 
 #function for adding new session
 def add_session(sessions):
@@ -222,16 +207,11 @@ def show_total_time():
         f"and {remaining_minutes} {minute_word}~"
 )
 
-#function for saving sessions to json
-def save_sessions(sessions):
-    with open(DATA_FILE, "w", encoding="utf-8") as file:
-        json.dump(sessions, file, indent=4, ensure_ascii=False)
-        
 def main():
     create_database()
     print("🌸 Welcome to Study Tracker!")
     
-    study_sessions = load_sessions_from_database()
+    sessions = load_sessions_from_database()
     
     while True:
         show_menu()
@@ -241,13 +221,13 @@ def main():
 
         #menu responses
         if choice == "1":
-            add_session(study_sessions)
+            add_session(sessions)
         elif choice == "2":
-            view_sessions(study_sessions)
+            view_sessions(sessions)
         elif choice == "3":
             show_total_time()
         elif choice == "4":
-            delete_session(study_sessions)
+            delete_session(sessions)
         elif choice == "5":
             print("Goodbye! Keep learning~ 💗")
             break
